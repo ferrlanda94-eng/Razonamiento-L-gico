@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+< html  lang = "es" >
+<cabeza>​​
+< meta  charset = "UTF-8" >
+< meta  name = "viewport"  content = "width=device-width, initial-scale=1" >
+< title >🐱 ¡Descubre el Misterio del Pedido de Usilvery!</ title >
+< link  rel = "preconnect"  href = "https://fonts.googleapis.com" >
+< link  rel = "preconnect"  href = "https://fonts.gstatic.com" crossorigin>
+< link  href = "https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap"  rel = "stylesheet" >
+<style>​​
+* { margin : 0 ; padding : 0 ; box-sizing :border-box; -webkit-tap-highlight-color :transparent}
+html { scroll-behavior :smooth}
+cuerpo {
+  min-height :100svh; overflow-x :hidden;
+  font-family : 'Baloo 2' , 'Comic Sans MS' , 'Chalkboard SE' , 'Trebuchet MS' , system-ui, sans-serif;
+  color :#3a2e55;
+  fondo : gradiente lineal ( 135 grados , #ffd6ec, #e6d7ff, #c9f0ff, #fff3b0, #ffd6ec);
+  background-size : 400 % 400 %; animation :bgShift 22s ease infinite;
+}
+@keyframes bgShift{ 0 %, 100 %{ background-position : 0 % 50 %} 50% { background-position : 100 % 50 %}}
+botón { font-family :inherit}
+#decor-layer { position :fixed; inset : 0 ; z-index : 0 ; pointer-events :none; overflow :hidden}
+.decor { posición : absoluta; opacidad : .5 ; animación : flotante var ( --t , 7s ) ease-in-out infinite alternate; animation-delay : var ( --del , 0s )}
+@keyframes floaty{from{ transform : translateY (- 14px ) rotate (- 10deg )} to { transform : translateY ( 16px ) rotate ( 10deg )}}
+.game-shell { position : relative; z-index : 2 ; max-width : 780px ; margin : 0 auto; padding : 14px  14px  46px }
+.topbar { display : flex; justify-content : space-between; align-items : center; gap : 8px ; flex-wrap : wrap}
+.brand { background :#fff; border-radius : 999px ; padding : 7px  15px ; font-weight : 900 ; font-size : clamp (. 85rem , 3vw , 1.05rem ); transform : rotate (- 2deg ); box-shadow : 0  4px  12px  rgba ( 58 , 46 , 85 ,. 16 )}
+.brand.alt { background :#fff3b0; transform : rotate ( 2deg )}
+#sound-toggle { position :fixed; top : 12px ; right : 12px ; z-index : 1200 ; width : 54px ; height : 54px ; border-radius : 50 %; border : 3px solid #fff; background : linear-gradient ( 180deg ,#5a8cff,#2f6bff); color :#fff; font-size : 26px ; cursor :pointer; box-shadow : 0  5px  0 #1d47b8, 0  10px  22px  rgba ( 0 , 0 , 0 ,. 22 ); transition :transform . 15s }
+#sound-toggle:active { transform : translateY ( 3px )}
+.hud { display : flex; gap : 6px ; justify-content : center; flex-wrap : wrap; margin : 12px  0  4px }
+.hud-chip { background : rgba ( 255 , 255 , 255 ,. 65 ); border-radius : 999px ; padding : 6px  13px ; font-weight : 900 ; font-size : clamp (. 72rem , 2.7vw ,. 9rem ); opacity :. 5 ; transition :all . 3s ; border : 2px solid transparent}
+.hud-chip.now { opacidad : 1 ; fondo : #fff; color del borde : #2f6bff; transformación : escala ( 1.07 ); sombra de caja : 0  4px  12px  rgba ( 47 , 107 , 255 , .25 )}
+.hud-chip.done { opacidad : 1 ; fondo : #ffe066; color del borde : #ffd23e}
+.screen { display : none; flex-direction : column; align-items : center; gap : 15px ; padding-top : 12px }
+.screen.active { display : flex; animation : screenIn .55s  cubic-bezier ( .2 , 1.4 , .4 , 1 ) }
+@keyframes screenIn{from{ opacity : 0 ; transform : translateY ( 34px ) scale (. 95 )} to { opacity : 1 ; transform :none}}
+.sticker { background : linear-gradient ( 180deg , #ff8fbf, #ff5ca8); color : #fff; font-weight : 900 ; letter-spacing : 1px ; border-radius : 14px ; padding : 7px  18px ; font-size : clamp ( .82rem , 3.2vw , 1.05rem ); transform : rotate ( -2.5deg ); box-shadow : 0  5px  0 #d63d8b; text-align : center}
+.sticker.blue { background : linear-gradient ( 180deg ,#5a8cff,#2f6bff); box-shadow : 0  5px  0 #1d47b8}
+.sticker.lila { background : linear-gradient ( 180deg ,#b28cff,#8f5cff); box-shadow : 0  5px  0 #6a3fc9}
+.sticker.yellow { background : linear-gradient ( 180deg ,#ffe066,#ffd23e); color :#6b5200; box-shadow : 0  5px  0 #d9a916}
+.title { font-size : clamp ( 1.55rem , 6vw , 2.55rem ); text-align : center; line-height : 1.18 ; text-shadow : 0  3px  0 #fff, 0  8px  22px  rgba ( 255 , 126 , 185 , .45 ) }
+.usilvery { background :#2f6bff; color :#fff; padding : 0  12px ; border-radius : 14px ; display :inline-block; transform : rotate (- 2deg ); box-shadow : 0  5px  0 #1d47b8}
+.subtítulo { font-size : clamp ( 1rem , 3.6vw , 1.18rem ); text-align : center; font-weight : 700 ; opacity : 0.9 ; line-height : 1.45 }
+.subtitle.small { font-size : clamp (. 85rem , 3vw , 1rem ); opacity :. 75 }
+.start-cats { display : flex; gap : clamp ( 8px , 3vw , 20px ); align-items : flex-end}
+.cat-big { font-size : clamp ( 50px , 13vw , 82px ); display : inline-block; animation : bounceSoft 1.5s ease-in-out infinite}
+@keyframes bounceSoft{ 0 %, 100 %{ transform : translateY ( 0 )} 50% { transform : translateY (- 10px )}}
+.card { background :#fff; border-radius : 24px ; padding : 18px ; width : 100 %; border : 3px solid #ffe066; box-shadow : 0  12px  30px  rgba ( 58 , 46 , 85 ,. 14 )}
+.card.pink { border-color :#ffb3d9} .card.blue { border-color :#7ee8fa} .card.lila { border-color :#c9a7ff}
+.center { text-align :center}
+.howto { display : flex; gap : 8px ; flex-wrap : wrap; justify-content : center; margin-top : 10px }
+.mini-chip { background :#fff; border : 2px solid #7ee8fa; border-radius : 999px ; padding : 6px  13px ; font-weight : 800 ; font-size : clamp (. 78rem , 3vw ,. 95rem )}
+.btn { borde : ninguno; radio de borde : 999px ; relleno : 15px  28px ; peso de fuente : 900 ; tamaño de fuente : clamp ( 1.05rem , 3.8vw , 1.3rem ); cursor : puntero; color : #3a2e55; transición : transform .15s , box-shadow .15s ; espaciado entre letras : .5px }
+.btn:hover { transform : translateY (- 2px )}
+.btn:active { transform : translateY ( 3px )}
+.btn-blue { background : linear-gradient ( 180deg , #5a8cff, #2f6bff); color : #fff; box-shadow : 0  6px  0 #1d47b8, 0  12px  22px  rgba ( 47 , 107 , 255 , .3 ) }
+.btn-pink { background : linear-gradient ( 180deg , #ff8fbf, #ff5ca8); color : #fff; box-shadow : 0  6px  0 #d63d8b, 0  12px  22px  rgba ( 255 , 92 , 168 , .3 ) }
+.btn-green { background : linear-gradient ( 180deg , #7be3a6, #3ecf7f); color : #0a4d27; box-shadow : 0  6px  0 #2aa361, 0  12px  22px  rgba ( 62 , 207 , 127 , .3 ) }
+.btn.pulse { animación : pulso 1.5s ease-in-out infinito}
+@keyframes pulse{ 0 %, 100 %{ transform : scale ( 1 )} 50% { transform : scale ( 1.06 )}}
+.oculto { mostrar : ninguno!importante}
+.pop { animación :popIn . 5s  cubic-bezier (. 2 , 1.6 ,. 4 , 1 ) ambos}
+@keyframes popIn{ 0 %{ opacidad : 0 ; transformación : escala (. 3 )} 70% { transformación : escala ( 1.12 )} 100% { opacidad : 1 ; transformación : escala ( 1 )}}
+.phone { ancho : min ( 330px , 92 %); fondo : #2b2440; radio de borde : 28px ; relleno : 12px  10px ; sombra de caja : 0  16px  34px  rgba ( 0 , 0 , 0 , .28 )}
+.notch { ancho : 92px ; alto : 8px ; fondo : #4a4066; radio de borde : 99px ; margen : 0 auto 8px }
+.phone-screen { background : linear-gradient ( 180deg , #7ee8fa, #c9a7ff); border-radius : 18px ; padding : 12px  10px ; display : flex; flex-direction : column; gap : 9px ; min-height : 120px }
+.notif { background :#fff; border-radius : 14px ; padding : 10px  12px ; box-shadow : 0  6px  14px  rgba ( 0 , 0 , 0 ,. 16 ); animation :notifIn . 5s  cubic-bezier (. 2 , 1.4 ,. 4 , 1 ) both}
+@keyframes notifIn{from{ opacity : 0 ; transform : translateY (- 26px ) scale (. 9 )} to { opacity : 1 ; transform :none}}
+.n-head { display : flex; justify-content : space-between; font-weight : 900 ; font-size : .82rem ; color : #2f6bff}
+.n-body { font-size : clamp ( .85rem , 3.2vw , .95rem ); font-weight : 700 ; line-height : 1.4 ; margin-top : 2px }
+.status-warn { color :#e0245e; font-weight : 900 }
+.notif.alert { animación : notifIn . 4s ambos,alarm . 45s ease-in-out . 1s  3 }
+@keyframes alarma{ 0 %, 100 %{ transform : translateX ( 0 )} 25% { transform : translateX (- 7px )} 75% { transform : translateX ( 7px )}}
+.cat-scene { display : flex; align-items : center; gap : 12px ; width : 100 %; max-width : 560px }
+.cat-avatar { position :relative; flex : 0  0 auto; width : clamp ( 76px , 20vw , 106px ); height : clamp ( 76px , 20vw , 106px ); display :flex; align-items :center; justify-content :center; font-size : clamp ( 46px , 12vw , 64px ); background : radial-gradient (circle at 30 % 30 %,#fff,#ffe9f4); border-radius : 50 %; border : 4px solid #ffb3d9; box-shadow : 0  8px  22px  rgba ( 255 , 126 , 185 ,. 35 ); animation :bounceSoft 2s ease-in-out infinite}
+.prop { position : absolute; right : -8px ; bottom : -6px ; font-size : clamp ( 22px , 6vw , 32px ); animation : wiggle 1.1s ease-in-out infinite; display : inline-block}
+@keyframes wiggle{ 0 %, 100 %{ transform : rotate (- 16deg )} 50% { transform : rotate ( 16deg )}}
+.bubble { position : relative; flex : 1 ; background : #fff; border-radius : 18px ; padding : 12px  15px ; font-weight : 700 ; font-size : clamp ( .98rem , 3.6vw , 1.12rem ); line-height : 1.4 ; border : 3px solid #c9a7ff; box-shadow : 0  8px  20px  rgba ( 58 , 46 , 85 , .12 )}
+.bubble::before { content : '' ; position :absolute; left :- 15px ; top : 26px ; border : 9px solid transparent; border-right-color :#c9a7ff}
+.small { font-size : .83em ; opacity : .72 ; font-weight : 700 }
+.clue-card { width : 100 %; max-width : 560px ; display :none; gap : 12px ; align-items :center; background :#fff; border-radius : 20px ; padding : 14px  16px ; border : 3px solid; box-shadow : 0  10px  26px  rgba ( 58 , 46 , 85 ,. 14 )}
+.clue-card.show { display : flex; animation : popIn . 55s  cubic-bezier (. 2 , 1.6 ,. 4 , 1 ) both}
+.clue-tag { flex : 0  0 auto; font-weight : 900 ; border-radius : 12px ; padding : 9px  11px ; color :#fff; font-size : clamp (. 75rem , 2.8vw ,. 9rem ); box-shadow : 0  4px  0  rgba ( 0 , 0 , 0 ,. 16 )}
+.clue-tag.p1 { fondo : #ff5ca8 } .clue-tag.p2 { fondo : #2f6bff }
+.clue-text { font-weight : 800 ; font-size : clamp (. 95rem , 3.6vw , 1.08rem ); line-height : 1.35 ; margin-bottom : 5px }
+.logic { font-weight : 900 ; font-size : clamp ( 1.45rem , 6vw , 1.9rem ); letter-spacing : 2px }
+.lp { color :#e0245e} .lq { color :#2f6bff} .lo { color :#8f5cff} .lnot { color :#8f5cff}
+.legend { background : rgba ( 255 , 255 , 255 ,. 8 ); border : 2px dashed #8f5cff; border-radius : 14px ; padding : 9px  15px ; font-weight : 800 ; font-size : clamp (. 82rem , 3.2vw ,. 98rem ); text-align :center}
+.q-cat { font-size : clamp ( 46px , 11vw , 62px ); display :inline-block; animation :wiggle 1.6s ease-in-out infinite}
+.q-text { font-size : clamp ( 1.12rem , 4.4vw , 1.45rem ); line-height : 1.35 ; margin : 6px  0 }
+.attempts { display : inline-block; background : #fff3b0; border-radius : 999px ; padding : 6px  16px ; font-weight : 900 ; font-size : clamp ( .85rem , 3.2vw , 1rem ); margin-top : 4px }
+.options { display : grid; grid-template-columns : repeat (auto-fit, minmax ( 230px , 1fr)); gap : 12px ; width : 100 % }
+.opt { text-align : left; border : none; border-radius : 20px ; padding : 16px ; font-weight : 800 ; font-size : clamp ( .98rem , 3.5vw , 1.08rem ); cursor : pointer; display : flex; align-items : center; gap : 11px ; color : #3a2e55; box-shadow : 0  6px  0  rgba ( 0 , 0 , 0 , .15 ), 0  12px  24px  rgba ( 58 , 46 , 85 , .16 ); transition : transform .15s ; line-height : 1.3 }
+.opt:hover { transform : translateY (- 3px ) scale ( 1.02 )}
+.opt:active { transform : translateY ( 2px )}
+.key { flex : 0  0 auto; width : 42px ; height : 42px ; border-radius : 13px ; background :#fff; display :flex; align-items :center; justify-content :center; font-size : 1.25rem ; font-weight : 900 ; box-shadow : 0  3px  0  rgba ( 0 , 0 , 0 ,. 14 )}
+.opt-a { background : linear-gradient ( 180deg ,#ffc2e0,#ff9ecb)}
+.opt-b { background : linear-gradient ( 180deg ,#9db9ff,#6f94ff); color :#fff}
+.opt-b .key { color :#2f6bff}
+.opt-c { background : linear-gradient ( 180deg ,#ffeaa6,#ffd23e)}
+.opt.wrong { outline : 4px dashed #e0245e; outline-offset : 3px ; filter : saturate (. 45 ) brightness (. 96 ); animation :shakeX . 5s }
+@keyframes shakeX{ 0 %, 100 %{ transform : translateX ( 0 )} 20% { transform : translateX (- 9px )} 40% { transform : translateX ( 9px )} 60% { transform : translateX (- 6px )} 80% { transform : translateX ( 6px )}}
+.opt.correct { background : linear-gradient ( 180deg , #7be3a6, #3ecf7f); color : #0a4d27; outline : 4px solid #ffe066; outline-offset : 3px ; animation : tada.8s }
+@keyframes tada{ 0 %{ transform : scale ( 1 )} 30% { transform : scale ( 1.14 ) rotate (- 4deg )} 60% { transform : scale ( 1.09 ) rotate ( 4deg )} 100% { transform : scale ( 1 )}}
+.opts-locked .opt { pointer-events :none}
+.feedback { ancho : 100 %; ancho máximo : 560px ; radio de borde : 20px ; relleno : 14px  16px ; mostrar : flex; espacio : 12px ; alinear elementos : centro; peso de fuente : 700 ; tamaño de fuente : clamp ( .95rem , 3.5vw , 1.08rem ); altura de línea : 1.4 ; borde : 3px sólido}
+.feedback.bad { background :#ffe3ec; border-color :#ff7eb9}
+.feedback.good { background :#e3fff0; border-color :#3ecf7f}
+.f-cat { font-size : clamp ( 40px , 10vw , 56px ); flex : 0  0 auto; animation :bounceSoft 1.3s ease-in-out infinite}
+#steps-box { ancho : 100 %; mostrar : flex; flex-direction : columna; espacio : 12px }
+.step { width : 100 %; display :flex; gap : 12px ; align-items :flex-start; background :#fff; border-radius : 20px ; padding : 14px  16px ; border : 3px solid #c9a7ff; box-shadow : 0  8px  22px  rgba ( 58 , 46 , 85 ,. 12 ); animation :popIn . 5s  cubic-bezier (. 2 , 1.6 ,. 4 , 1 ) both}
+.step.final-step { background : linear-gradient ( 180deg ,#fffbe6,#fff3b0)}
+.s-emoji { font-size : clamp ( 34px , 9vw , 46px ); flex : 0  0 auto; animation :bounceSoft 2s ease-in-out infinite}
+.step h3 { font-size : clamp ( 1rem , 3.8vw , 1.15rem ); margin-bottom : 4px }
+.step p { font-size : clamp (. 92rem , 3.4vw , 1.02rem ); line-height : 1.45 ; font-weight : 600 }
+.chip-line { display : inline-block; margin-top : 9px ; background : #3a2e55; color : #ffe066; padding : 8px  18px ; border-radius : 14px ; font-weight : 900 ; font-size : clamp ( 1.18rem , 5vw , 1.55rem ); letter-spacing : 1px }
+.case-resolved { width : 100 %; max-width : 560px ; text-align :center; display :flex; flex-direction :column; gap : 8px ; align-items :center; background :#fff; border : 3px solid #ffd23e; border-radius : 22px ; padding : 16px ; box-shadow : 0  10px  26px  rgba ( 58 , 46 , 85 ,. 15 )}
+.resolved-title { font-size : clamp ( 1.3rem , 5.5vw , 1.9rem ); font-weight : 900 ; color :#e0245e; text-shadow : 0  2px  0 #ffe066}
+.medal-box { position : relative; display : inline-flex; align-items : center; justify-content : center; margin : 4px  0 }
+.rays { position : absolute; width : clamp ( 190px , 52vw , 250px ); height : clamp ( 190px , 52vw , 250px ); background : repeating-conic-gradient ( rgba ( 255 , 224 , 102 , .75 ) 0  12deg , transparent 12deg  24deg ); border-radius : 50 %; animation : spin 9s linear infinite}
+@keyframes girar{a{ transformar : rotar ( 360 grados )}}
+.medal { position :relative; font-size : clamp ( 84px , 24vw , 132px ); animation :medalBounce 1.8s ease-in-out infinite; filter : drop-shadow ( 0  10px  24px  rgba ( 255 , 190 , 0 ,. 55 ))}
+@keyframes medalBounce{ 0 %, 100 %{ transform : translateY ( 0 ) scale ( 1 )} 50% { transform : translateY (- 12px ) scale ( 1.07 )}}
+.stars { display : flex; gap : 10px ; justify-content : center}
+.star { opacidad : 0 ; transformación : escala ( 0 ); tamaño de fuente : clamp ( 34px , 9vw , 52px )}
+.star.show { animación : starPop . 55s  cubic-bezier (. 2 , 1.8 ,. 4 , 1 ) hacia adelante}
+@keyframes starPop{to{ opacity : 1 ; transform : scale ( 1 )}}
+.summary { display : flex; gap : 9px ; flex-wrap : wrap; justify-content : center}
+.pill { background :#3a2e55; color :#fff; border-radius : 14px ; padding : 9px  16px ; font-weight : 900 ; font-size : clamp ( 1rem , 4.2vw , 1.3rem ); letter-spacing : 1px }
+.pill.hl { background :#ffd23e; color :#5a4a00; outline : 3px solid #2f6bff}
+.superpower { display : inline-block; background : linear-gradient ( 90deg , #7ee8fa, #c9a7ff); border-radius : 999px ; padding : 8px  20px ; font-weight : 900 ; transform : rotate ( 1.5deg ); box-shadow : 0  5px  0  rgba ( 0 , 0 , 0 , .12 ); margin-top : 12px ; font-size : clamp ( .9rem , 3.4vw , 1.05rem )}
+.cat-final { font-size : clamp ( 44px , 12vw , 72px ); letter-spacing : 10px ; animation : bounceSoft 1.5s ease-in-out infinite}
+#capa-confeti { posición : fija; margen : 0 ; eventos-puntero : ninguno; índice-z : 1100 ; desbordamiento : oculto}
+.confetti { position :absolute; top :- 8vh ; animation :confettiFall var ( --dur , 3s ) linear forwards; animation-delay : var ( --del , 0s ); will-change :transform}
+.confetti.dot { ancho : var ( --w , 10px ); alto : var ( --h , 16px ); radio de borde : 3px }
+.confetti.emo { font-size : var ( --fs , 22px )}
+@keyframes confettiFall{to{ transform : translateY ( 125vh ) rotate ( 760deg )}}
+@media (max-width: 640px ){.topbar{ padding-right : 62px }}
+@media (max-width: 520px ){.options{ grid-template-columns :1fr}}
+@media (prefers-reduced-motion:reduce){*{ animation-duration :. 01ms !important; animation-iteration-count : 1 !important; transition-duration :. 01ms !important}}
+</style>​​
+</head>​​
+< cuerpo >
+< div  id = "decor-layer"  aria-hidden = "true" ></ div >
+< botón  id = "sound-toggle"  title = "Activar o desactivar el sonido"  aria-label = "Activar o desactivar el sonido" >🔊</ botón >
+
+< clase principal  = "game-shell" >
+  < div  class = "topbar" >
+    < div  class = "brand" >🐱 Misterio Usilvery</ div >
+    < div  class = "brand alt" >🍔 Lógica proposicional</ div >
+  </div>​​
+
+  < div  class = "hud"  aria-hidden = "true" >
+    < span  class = "hud-chip"  data-hud = "problema" >🐾 Misterio</ span >
+    < abarcan  clase = "hud-chip"  data-hud = "reto" >🎯 Reto</ abarcan >
+    < abarcan  clase = "hud-chip"  data-hud = "solucion" >🔍 Solución</ abarca >
+    < abarcan  clase = "hud-chip"  data-hud = "final" >🏅 Medalla</ abarcan >
+  </div>​​
+
+  <!-- ===== PANTALLA DE INICIO ===== -->
+  < section  id = "screen-start"  class = "screen active" >
+    < div  class = "sticker yellow" >🎮 MINIJUEGO EDUCATIVO</ div >
+    < h1  class = "title" >🐱 ¡DESCUBRE EL MISTERIO DEL PEDIDO DE < abarcan  clase = "usilvery" >USILVERY</ span >! 🍔 </h1>​
+    < div  class = "start-cats" >
+      < span  class = "cat-big" >🐱</ span >
+      < span  class = " cat -big"  style = "animation-delay:.18s" >🍔 </span>
+      < span  class = " cat -big"  style = "animation-delay:.36s" >🍟 </span>
+      < span  class = " cat -big"  style = "animation-delay:.54s" >🥤 </span>
+    </div>​​
+    < div  class = "card lila center" >
+      < p  class = "subtitle" >Un pedido de Usilvery quedó < b >atascado en la cocina</ b > 📦⚠️< br >¡Conviértete en detective de la lógica y resuelve el caso! 🕵️ </p>​
+      < div  class = "howto" >
+        < abarcan  clase = "mini-chip" >👀 Lee las pistas</ abarcan >
+        < abarcan  clase = "mini-chip" >🧠 Elige la respuesta</ abarcan >
+        < abarcan  clase = "mini-chip" >🏅 Gana tu medalla</ abarcan >
+      </div>​​
+    </div>​​
+    < button  id = "btn-start"  class = " btn btn-pink pulse"  style = "font-size:clamp(1.3rem,5vw,1.7rem);padding:18px 44px" >▶ ¡JUGAR! </button>
+    < p  class = "subtitle small" >🎧 Consejo: sube el volumen… hay miaus y música 🎵</ p >
+  </ sección >
+
+  <!-- ===== PARTE 1: ¡TENEMOS UN PROBLEMA! ===== -->
+  < section  id = "screen-problema"  class = "screen" >
+    < div  class = "sticker" >PARTE 1 · ¡TENEMOS UN PROBLEMA!</ div >
+    < div  class = "phone hidden"  id = "phone" >
+      < div  class = " notch" > </div>
+      < div  class = "phone-screen" >
+        < div  class = "notif"  id = "notif" >
+          < div  class = "n-head" >< span >🛵 Usilvery</ span >< span >ahora</ span ></ div >
+          < div  class = "n-body" >📱 ¡Nuevo pedido!< br >1x 🍔 Burger-Miau · 1x 🍟 Papitas · 1x 🥤 Refresco</ div >
+        </div>​​
+        < div  class = "notif hidden"  id = "notif-alert" >
+          < div  class = "n-head" >< span >⚠️ Cocina gatuna</ span >< span >¡¡</ span ></ div >
+          < div  class = "n-body status-warn" >¡El pedido NO puede continuar con su preparación!</ div >
+        </div>​​
+      </div>​​
+    </div>​​
+    < div  class = "cat-scene hidden"  id = "detective" >
+      < div  class = "cat-avatar" >🐱< span  class = "prop" >🔍</ span ></ div >
+      < div  class = "burbuja" >«¡Miau! Tenemos un < b >misterio</ b > que resolver 🐾»< br >< span  class = "small" >El chef gatuno está bloqueado… ¿por qué? 🤨 Investigamos las pistas.</ span ></ div >
+    </div>​​
+    < button  id = "btn-clues"  class = "btn btn-blue pulse hidden" > 🔎 VER LAS PISTAS </button>
+
+    < div  class = "clue-card"  id = "clue1"  style = "border-color:#ffb3d9" >
+      < span  class = "clue-tag p1" >PISTA 1</ span >
+      < div >
+        < div  class = "clue-text" >Si el pedido fue revisado, los productos están disponibles.</ div >
+        < div  class = "logic" >< span  class = "lp" >p</ span > < span  class = "lo" >→</ span > < span  class = "lq" >q</ span ></ div >
+      </div>​​
+    </div>​​
+    < div  class = "clue-card"  id = "clue2"  style = "border-color:#7ee8fa" >
+      < span  class = "clue-tag p2" >PISTA 2</ span >
+      < div >
+        < div  class = "clue-text" >Los productos < b >NO</ b > están disponibles. 😾 </div>​
+        < div  class = "logic" >< span  class = "lnot" >¬</ span >< span  class = "lq" >q</ span ></ div >
+      </div>​​
+    </div>​​
+    < div class = "legend hide" id = "legend" >🔑 < abarcan  clase = "  lp " > p < / span > = el  pedido fue revisado  •  < abarcan clase = "lq" >q</ abarcan > = los productos están disponibles</ div > 
+    < botón  id = "btn-reto"  clase = "btn btn-rosa pulso oculto" >🎯 ¡ACEPTAR EL RETO!</ botón >
+  </ sección >
+
+  <!-- ===== PARTE 2: ¡ADIVINA LA RESPUESTA! ===== -->
+  < section  id = "screen-reto"  class = "screen" >
+    < div  class = "sticker blue" >PARTE 2 · ¡ADIVINA LA RESPUESTA!</ div >
+    < div  class = "card lila center" >
+      < span  class = "q-cat" >🤔</ span >
+      < h2  class = "q-text" >«Si los productos no están disponibles,< br >¿qué podemos concluir?»</ h2 >
+      < span  class = "attempts"  id = "attempts" >🐾 Intentos: 0</ span >
+    </div>​​
+    < div  class = "options"  id = "options" >
+      < button  class = "opt opt-a"  data-k = "A" >< span  class = "key" >A</ span >🙌 El pedido sí fue revisado.</ button >
+      < button  class = "opt opt-b"  data-k = "B" >< span  class = "key" >B</ span >🕵️ El pedido no fue revisado.</ button >
+      < button  class = "opt opt-c"  data-k = "C" >< span  class = "key" >C</ span >😺 Los productos sí están disponibles.</ button >
+    </div>​​
+    < div  class = "feedback hidden"  id = "feedback" >
+      < span  class = "f-cat"  id = "f-cat" >😿</ span >
+      < span  id = "f-msg" ></ span >
+    </div>​​
+    < boton  id = "btn-solucion"  class = "btn btn-pink pulse oculto" >🔍 VER LA SOLUCIÓN PASO A PASO</ boton >
+  </ sección >
+
+  <!-- ===== PARTE 3: ¡DESCUBRE LA RESPUESTA! ===== -->
+  < section  id = "screen-solucion"  class = "screen" >
+    < div  class = "sticker lila" >PARTE 3 · ¡DESCUBRE LA RESPUESTA!</ div >
+    < div  class = "card pink center" >
+      < span  class = "q-cat" >😼</ span >
+      < h2  class = "q-text" >Veamos el caso < b >paso a paso</ b > 🐾</ h2 >
+      < div  class = "legend"  style = "width:100%" >PISTA 1: < span  class = "lp" >p </span> < span  class = "lo" >→ </span> < span  class = "lq" > q</span> & nbsp;•  PISTA 2: < span  class = " lnot" >¬ </span> < span  class = "lq" >q </span> </div>
+    </div>​​
+    < div  id = "steps-box" ></ div >
+    < botón  id = "btn-next"  clase = "btn btn-pulso azul" >▶ SIGUIENTE PASO</ botón >
+    < div  class = "case-resolved hidden"  id = "resolved" >
+      < div  class = "cat-avatar"  style = "margin:0 auto" >🐱< span  class = "prop" >🔍</ span ></ div >
+      < div  class = "resolved-title" >«¡Miau! ¡ Caso resuelto!» </div>
+      < p  class = "subtitle" >El gatito detective guarda su lupa… por hoy 🕵️✨</ p >
+    </div>​​
+    < button  id = "btn-medalla"  class = "btn btn-green pulse hidden" >🏅 ¡RECLAMA TU MEDALLA!</ button >
+  </ sección >
+
+  <!-- ===== PANTALLA FINAL ===== -->
+  < section  id = "screen-final"  class = "screen" >
+    < div  class = "sticker amarillo" >🏅 MISIÓN COMPLETADA</ div >
+    < div  class = "medal-box" >< div  class = "rays" ></ div >< div  class = "medal" >🏅</ div ></ div >
+    < div  class = "stars" >
+      < span  class = "star" >⭐</ span >< span  class = "star" >⭐</ span >< span  class = "star" >⭐</ span >
+    </div>​​
+    < h1  class = "title" >¡FELICIDADES, DETECTIVE! 🎉 </h1>​
+    < p  class = "subtitle" >Has resuelto el misterio de Usilvery utilizando la < b >lógica proposicional</ b > 🧠✨</ p >
+    < div  class = "cat-final" >😻🎉💖</ div >
+    < div  class = "card blue center" >
+      < div  class = "summary" >
+        < span  class = "pill" >P1: p → q</ span >
+        < span  class = "pill" >P2: ¬q</ span >
+        < span  class = "pill hl" >∴ ¬p = V</ span >
+      </div>​​
+      < div  class = "superpower" >🦸 Tu superpoder detective: MODUS TOLLENS</ div >
+    </div>​​
+    < botón  id = "btn-again"  class = "btn btn-pink pulse" >🔄 JUGAR OTRA VEZ</ botón >
+  </ sección >
+</main>​​
+
+< div  id = "confetti-layer"  aria-hidden = "true" ></ div >
+<script>​​
+( función (){
+'usar estricto' ;
+var $= function (s){ return document. querySelector (s);};
+var $$= function (s){ return  Array . prototype . slice . call (document. querySelectorAll (s));};
+
+/* ============ AUDIO: todo generado con Web Audio API (sin archivos) ============ */
+var ctx= null , soundOn= true , started= false , musicTimer= null ;
+var noteIdx= 0 , nextTime= 0 , bassIdx= 0 , nextBass= 0 ;
+var  norte ={ C3 : 130,81 , D3 : 146,83 , E3 : 164,81 , F3 : 174,61 , G3 : 196,00 , A3 : 220,00 , B3 : 246,94 ,
+C5 : 523,25 , D5 : 587,33 , E5 : 659,25 , F5 : 698,46 , G5 : 783,99 , A5 : 880,00 , B5 : 987,77 , C6 : 1046,50 , E6 : 1318,51 , G6 : 1567,98 };
+var  BEAT = 0.21 ;
+var  MELODY =[
+[ 'C5' , 1 ],[ 'E5' , 1 ],[ 'G5' , 1 ],[ 'E5' , 1 ],[ 'A5' , 1 ],[ 'G5' , 2 ],[ 0 , 1 ],[ 'E5' , 1 ],
+[ 'F5' , 1 ],[ 'A5' , 1 ],[ 'G5' , 1 ],[ 'F5' , 1 ],[ 'E5' , 1 ],[ 'C5' , 2 ],[ 0 , 1 ],[ 0 , 1 ],
+[ 'D5' , 1 ],[ 'F5' , 1 ],[ 'A5' , 1 ],[ 'G5' , 1 ],[ 'F5' , 1 ],[ 'E5' , 2 ],[ 0 , 1 ],[ 'D5' , 1 ],
+[ 'C5' , 1 ],[ 'E5' , 1 ],[ 'G5' , 1 ],[ 'C6' , 1 ],[ 'B5' , 1 ],[ 'G5' , 1 ],[ 'E5' , 1 ],[ 'C5' , 1 ]
+];
+var  BASS16 =[ 'C3' , 0 , 'G3' , 0 , 'A3' , 0 , 'E3' , 0 , 'F3' , 0 , 'C3' , 0 , 'G3' , 0 , 'C3' , 0 ];
+
+función  ensureCtx (){
+  var  AC =window. AudioContext ||window. webkitAudioContext ;
+  si (! AC ) devolver  null ;
+  si (!ctx) ctx = nuevo  AC ();
+  if (ctx.state === 'suspended' ) ctx.resume ( ) ;
+  devolver ctx;
+}
+función  tono (o){
+  si (!soundOn) regresar ;
+  var c = ensureCtx (); if (!c) return ;
+  var f=o. f || 440 , f2=o. f2 || null , type =o. type || 'sine' , vol=o. vol ||. 15 ;
+  var dur=o. dur ||. 15 , when= Math . max ( 0 ,o. when || 0 ), atk=o. attack ||. 005 ;
+  var t0=c.currentTime + when;
+  var osc=c.createOscillator ( ), g= c.createGain ();
+  osc. tipo = tipo ; osc. frecuencia . establecerValorEnTiempo (f,t0);
+  si (f2) frecuencia del oscilador . rampa exponencialalvalorentiempo (f2,t0+dur);
+g   . ganancia.setValueAtTime ( .0001 , t0 );
+g   . ganancia.exponencialRampToValueAtTime ( vol,t0+atk);
+  g. ganancia . rampaexponencialalvalorentiempo ( .0001 , t0+dur);
+  osc. conectar (g); g. conectar (c. destino );
+inicio   del oscilador (t0); parada del oscilador (t0+dur+. 05 );
+}
+función  programarMúsica (){
+  si (!ctx) regresar ;
+  var horizonte = ctx. tiempoActual + 0.4 ;
+  mientras (nextTime<horizonte){
+    var m = MELODÍA [ noteIdx % MELODÍA.longitud ];
+    if (m[ 0 ]) tone ({ f : N [m[ 0 ]], type : 'square' , vol :. 045 , dur : BEAT *m[ 1 ]*. 92 , when :nextTime-ctx. currentTime });
+    noteIdx++; nextTime+= BEAT *m[ 1 ];
+  }
+  mientras (nextBass<horizonte){
+    var b = BASS16 [ bassIdx % BASS16.length ] ;
+    si (b) tono ({ f : N [b], tipo : 'triángulo' , vol :. 07 , dur : BEAT * 1.8 , cuando :nextBass-ctx. currentTime });
+    bassIdx++; nextBass+= BEAT * 2 ;
+  }
+}
+función  startMusic (){
+  si (!soundOn||musicTimer) regresa ;
+  var c = ensureCtx (); if (!c) return ;
+  nextTime=c. currentTime +. 15 ; nextBass=c. currentTime +. 15 ; noteIdx= 0 ; bassIdx= 0 ;
+  musicTimer = setInterval ( function (){ try { scheduleMusic ();} catch (e){} }, 150 );
+}
+función  detenerMúsica (){ si (temporizadorMúsica){ limpiarIntervalo (temporizadorMúsica); temporizadorMúsica= null ; } }
+
+var sfx={
+  clic : función (){ tono ({ f : 880 , tipo : 'cuadrado' , volumen : .08 , duración : .06 }); tono ({ f : 1320 , tipo : 'cuadrado' , volumen : .05 , duración : .05 , cuando : .05 }); },
+  notificar : función (){ tono ({ f : 1318.5 , tipo : 'sine' , vol : .16 , dur : .18 }); tono ({ f : 1046.5 , tipo : 'sine' , vol : .16 , dur : .32 , cuando : .16 }); },
+  alarma : función (){ tono ({ f : 988 , tipo : 'cuadrado' , volumen : 0.09 , duración : 1 }); tono ({ f : 988 , tipo : 'cuadrado' , volumen : 0.09 , duración : 1 , cuando : 16 }); tono ({ f : 740 , tipo : 'cuadrado' , volumen : 0.09 , duración : 16 , cuando : 32 }); },
+  suspense : function (){ tono ({ f : 110 , f2 : 320 , tipo : 'diente de sierra' , vol : 0.06 , dur : 1.1 }); tono ({ f : 220 , f2 : 440 , tipo : 'sinusoidal' , vol : 0.05 , dur : 1.1 , when : 1.15 }); },
+  pop : function (){ tone ({ f : 520 , f2 : 840 , type : 'sine' , vol :. 12 , dur :. 09 }); },
+  maullido : función (){ tono ({ f : 640 , f2 : 900 , tipo : 'sino' , vol : .13 , dur : .16 }); tono ({ f : 900 , f2 : 480 , tipo : 'sino' , vol : .13 , dur : .3 , cuando : .16 }); },
+  error : función (){
+    var seq=[[392,.16],[349,.16],[311,.16],[233,.42]], t=0;
+    for(var i=0;i<seq.length;i++){ tone({f:seq[i][0],f2:seq[i][0]*.92,type:'sawtooth',vol:.12,dur:seq[i][1],when:t}); t+=seq[i][1]; }
+  },
+  victory:function(){
+    var seq=['C5','E5','G5','C6'];
+    for(var i=0;i<seq.length;i++) tone({f:N[seq[i]],type:'triangle',vol:.16,dur:.12,when:i*.1});
+    tone({f:N.E6,type:'triangle',vol:.14,dur:.5,when:.42});
+    tone({f:N.G6,type:'sine',vol:.1,dur:.5,when:.48});
+  }
+};
+/* ============ DECORACIÓN FLOTANTE ============ */
+var DECOR=['🍔','🍟','🥤','🐱','📦','📱','🐾','🛍️','😹','😼','😻','🙀'];
+DECOR.forEach(function(e){
+  var s=document.createElement('span');
+  s.className='decor'; s.textContent=e;
+  s.style.left=(3+Math.random()*88)+'vw';
+  s.style.top=(3+Math.random()*88)+'vh';
+  s.style.fontSize=(18+Math.random()*26)+'px';
+  s.style.setProperty('--t',(6+Math.random()*6)+'s');
+  s.style.setProperty('--del',(Math.random()*4)+'s');
+  $('#decor-layer').appendChild(s);
+});
+
+/* ============ CONFETI ============ */
+var COLORS=['#ff7eb9','#7ee8fa','#c9a7ff','#ffe066','#2f6bff','#a8f0d4','#ff9ecb','#6f94ff'];
+var CONF_EMO=['⭐','✨','🎉','💖','🌟','🐾','🍔','🍟'];
+function confetti(n){
+  n=n||70;
+  var layer=$('#confetti-layer');
+  for(var i=0;i<n;i++){
+    var el=document.createElement('div');
+    var emo=Math.random()<.35;
+    el.className='confetti '+(emo?'emo':'dot');
+    if(emo){ el.textContent=CONF_EMO[Math.floor(Math.random()*CONF_EMO.length)]; el.style.setProperty('--fs',(16+Math.random()*16)+'px'); }
+    else{ el.style.background=COLORS[i%COLORS.length]; el.style.setProperty('--w',(7+Math.random()*7)+'px'); el.style.setProperty('--h',(10+Math.random()*10)+'px'); }
+    el.style.left=Math.random()*100+'vw';
+    el.style.setProperty('--dur',(2.2+Math.random()*1.8)+'s');
+    el.style.setProperty('--del',(Math.random()*.7)+'s');
+    layer.appendChild(el);
+    (function(node){ setTimeout(function(){ node.remove(); },5200); })(el);
+  }
+}
+
+/* ============ NAVEGACIÓN + HUD ============ */
+var ORDER=['problema','reto','solucion','final'];
+function goto(name){
+  $$('.screen').forEach(function(s){ s.classList.remove('active'); });
+  $('#screen-'+name).classList.add('active');
+  var idx=ORDER.indexOf(name);
+  $$('.hud-chip').forEach(function(c){
+    var me=ORDER.indexOf(c.getAttribute('data-hud'));
+    c.classList.toggle('now',me===idx);
+    c.classList.toggle('done',idx>-1&&me<idx);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============ PARTE 1: SECUENCIA DEL PROBLEMA ============ */
+var introTimers=[];
+function clearTimers(){ introTimers.forEach(function(t){ clearTimeout(t); }); introTimers=[]; }
+function later(fn,ms){ introTimers.push(setTimeout(fn,ms)); }
+function runIntro(){
+  clearTimers();
+  $('#phone').classList.add('hidden');
+  $('#notif-alert').classList.add('hidden');
+  $('#notif').classList.remove('alert');
+  $('#detective').classList.add('hidden');
+  $('#btn-clues').classList.add('hidden');
+  $('#clue1').classList.remove('show');
+  $('#clue2').classList.remove('show');
+  $('#legend').classList.add('hidden');
+  $('#btn-reto').classList.add('hidden');
+  later(function(){ $('#phone').classList.remove('hidden'); sfx.notify(); },500);
+  later(function(){ $('#notif-alert').classList.remove('hidden'); $('#notif').classList.add('alert'); sfx.alarm(); },1600);
+  later(function(){ $('#detective').classList.remove('hidden'); $('#detective').classList.add('pop'); sfx.meow(); },2700);
+  later(function(){ $('#btn-clues').classList.remove('hidden'); },3600);
+}
+$('#btn-clues').addEventListener('click',function(){
+  sfx.click();
+  $('#btn-clues').classList.add('hidden');
+  sfx.suspense();
+  later(function(){ $('#clue1').classList.add('show'); sfx.pop(); },700);
+  later(function(){ $('#clue2').classList.add('show'); sfx.pop(); },1500);
+  later(function(){ $('#legend').classList.remove('hidden'); },2200);
+  later(function(){ $('#btn-reto').classList.remove('hidden'); },2700);
+});
+
+/* ============ PARTE 2: EL RETO ============ */
+var attempts=0, solved=false;
+var WRONG={
+  A:{cat:'🙀',msg:'<b>¿¡Qué!? 😾</b> Si el pedido hubiera sido revisado, SÍ habría productos… ¡eso dice la PISTA 1! El gatito quedó en shock. ¡Inténtalo otra vez!'},
+  C:{cat:'😿',msg:'<b>Casi… 😿</b> Pero la PISTA 2 dice ¬q: ¡los productos NO están disponibles! El gatito llora por sus papitas 🍟. ¡Vuelve a intentarlo!'}
+};
+$$('#options .opt').forEach(function(b){
+  b.addEventListener('click',function(){
+    if(solved) return;
+    sfx.click();
+    attempts++;
+    $('#attempts').textContent='🐾 Intentos: '+attempts;
+    var fb=$('#feedback');
+    if(b.getAttribute('data-k')==='B'){
+      solved=true;
+      b.classList.add('correct');
+      $('#options').classList.add('opts-locked');
+      fb.className='feedback good pop';
+      $('#f-cat').textContent='😻';
+      $('#f-msg').innerHTML='<b>¡MIAU-RAVILLOSO! 🎉</b> El pedido <b>NO fue revisado</b>. ¡Eres un detective de primera clase!';
+      sfx.victory(); confetti(90);
+      later(function(){ $('#btn-solucion').classList.remove('hidden'); },700);
+    }else{
+      var w=WRONG[b.getAttribute('data-k')];
+      b.classList.add('wrong');
+      fb.className='feedback bad pop';
+      $('#f-cat').textContent=w.cat;
+      $('#f-msg').innerHTML=w.msg;
+      sfx.error();
+    }
+    fb.style.animation='none'; void fb.offsetWidth; fb.style.animation='';
+  });
+});
+
+/* ============ PARTE 3: SOLUCIÓN PASO A PASO ============ */
+var stepIdx=0;
+var STEPS=[
+ {emoji:'😺',t:'Paso 1 · Empezamos con la PISTA 2',b:'P2 dice que <b>¬q</b> es <b>Verdadera</b> (V).<br>Si ¬q es verdadera… ¡entonces <b>q</b> es <b>Falsa</b> (F)! 🙀',chip:'¬q = V ⇒ q = F',color:'#ffb3d9'},
+ {emoji:'🤔',t:'Paso 2 · Ahora usamos la PISTA 1',b:'P1 es la implicación: «Si el pedido fue revisado, los productos están disponibles».',chip:'p → q',color:'#7ee8fa'},
+ {emoji:'😮',t:'Paso 3 · Reemplazamos q',b:'Ya sabemos que <b>q = F</b>. Lo sustituimos dentro de P1:',chip:'p → F',color:'#c9a7ff'},
+ {emoji:'💡',t:'Paso 4 · ¡El momento clave!',b:'Para que la implicación <b>p → F</b> sea <b>Verdadera</b>… ¡p tiene que ser <b>Falsa</b>! (Si p fuera V, p → F sería F. 😾)',chip:'p = F',color:'#ffe066'},
+ {emoji:'🎉',t:'CONCLUSIÓN',b:'Como <b>p = F</b>, entonces <b>¬p</b> es <b>Verdadera</b>. ¡Ese era el secreto del pedido! 🕵️',chip:'∴ ¬p = V',color:'#ffd23e',final:true}
+];
+function renderStep(st){
+  var d=document.createElement('div');
+  d.className='step'+(st.final?' final-step':'');
+  d.style.borderColor=st.color;
+  d.innerHTML='<span class="s-emoji">'+st.emoji+'</span><div><h3>'+st.t+'</h3><p>'+st.b+'</p><div class="chip-line">'+st.chip+'</div></div>';
+  $('#steps-box').appendChild(d);
+}
+$('#btn-next').addEventListener('click',function(){
+  sfx.pop();
+  if(stepIdx<STEPS.length){
+    renderStep(STEPS[stepIdx]); stepIdx++;
+  }
+  if(stepIdx===STEPS.length){
+    $('#btn-next').classList.add('hidden');
+    later(function(){
+      $('#resolved').classList.remove('hidden');
+      $('#resolved').classList.add('pop');
+      sfx.meow(); confetti(50);
+      $('#btn-medalla').classList.remove('hidden');
+    },500);
+  }
+  var box=$('#steps-box');
+  if(box.lastElementChild) box.lastElementChild.scrollIntoView({behavior:'smooth',block:'nearest'});
+});
+
+/* ============ BOTONES PRINCIPALES ============ */
+$('#btn-start').addEventListener('click',function(){
+  ensureCtx();
+  started=true;
+  if(soundOn) startMusic();
+  sfx.click();
+  goto('problema');
+  runIntro();
+});
+$('#btn-reto').addEventListener('click',function(){ sfx.click(); goto('reto'); });
+$('#btn-solucion').addEventListener('click',function(){ sfx.click(); goto('solucion'); });
+$('#btn-medalla').addEventListener('click',function(){
+  sfx.click();
+  goto('final');
+  sfx.victory();
+  confetti(80);
+  setTimeout(function(){ confetti(60); },900);
+  setTimeout(function(){ confetti(60); },1800);
+  $$('#screen-final .star').forEach(function(s,i){
+    setTimeout(function(){ s.classList.add('show'); sfx.pop(); },400+i*250);
+  });
+});
+$('#btn-again').addEventListener('click',function(){
+  sfx.click();
+  resetGame();
+  goto('start');
+});
+
+/* ============ SONIDO ON/OFF ============ */
+$('#sound-toggle').addEventListener('click',function(){
+  soundOn=!soundOn;
+  this.textContent=soundOn?'🔊':'🔇';
+  if(soundOn){ if(started) startMusic(); sfx.click(); }
+  else{ stopMusic(); }
+});
+
+/* ============ REINICIO ============ */
+function resetGame(){
+  attempts=0; stepIdx=0; solved=false;
+  clearTimers();
+  $('#attempts').textContent='🐾 Intentos: 0';
+  $$('#options .opt').forEach(function(b){ b.classList.remove('wrong','correct'); });
+  $('#options').classList.remove('opts-locked');
+  $('#feedback').className='feedback hidden';
+  $('#btn-solucion').classList.add('hidden');
+  $('#steps-box').innerHTML='';
+  $('#btn-next').classList.remove('hidden');
+  $('#resolved').classList.add('hidden');
+  $('#btn-medalla').classList.add('hidden');
+  $$('#screen-final .star').forEach(function(s){ s.classList.remove('show'); });
+}
+})();
+</script>
+</body>
+</html>
